@@ -1,0 +1,83 @@
+{
+  "name": "Program",
+  "base": "PersistedModel",
+  "strict": "validate",
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "description":{
+      "type": "string",
+      "required": true
+    },
+    "numberOfWeeks":{
+      "type": "number",
+      "required": true
+    },
+    "memberId":{
+      "type":"string",
+      "required": true
+    },
+    "isDumbbellProgram":{
+      "type":"boolean",
+      "default":"false"
+    },
+    "online":{
+      "type":"boolean",
+      "default":"false"
+    },
+    "status":{
+      "type":"boolean",
+      "default":"true"
+    },
+    "isDietProgram":{
+      "type":"boolean",
+      "default":"false"
+    },
+    "slug": {
+      "type": "string",
+      "require": true
+    },
+    "created": {
+      "type": "date",
+      "defaultFn": "now"
+    },
+    "modified": {
+      "type": "date",
+      "defaultFn": "now"
+    }
+  },
+  "validations": [
+    ],
+  "relations": {
+    "member": {
+      "type": "belongsTo",
+      "model": "Member",
+      "foreignKey": "memberId"
+    },
+    "schedules": {
+      "type": "hasMany",
+      "model": "ProgramSchedule",
+      "foreignKey": "programId"
+    }
+  },
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "accessType": "READ",
+      "permission": "ALLOW"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "accessType": "WRITE",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {}
+}

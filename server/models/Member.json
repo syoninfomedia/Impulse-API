@@ -1,0 +1,25 @@
+{
+  "name": "Member",
+  "base": "User",
+  "idInjection": true,
+  "properties": {
+
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "accessType": "READ",
+      "permission": "ALLOW"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "accessType": "WRITE",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": []
+}

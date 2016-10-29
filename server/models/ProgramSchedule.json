@@ -1,0 +1,71 @@
+{
+  "name": "ProgramSchedule",
+  "base": "PersistedModel",
+  "strict": "validate",
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "day": {
+      "type": "number",
+      "required": true
+    },
+    "week":{
+      "type": "number",
+      "required": true
+    },
+    "programId":{
+      "type": "string",
+      "required": true
+    },
+    "memberId":{
+      "type": "string",
+      "required": true
+    },
+    "exerciseId":{
+      "type":[],
+      "default": []
+    },
+    "status":{
+      "type":"boolean",
+      "default":"true"
+    },
+    "created": {
+      "type": "date",
+      "defaultFn": "now"
+    },
+    "modified": {
+      "type": "date",
+      "defaultFn": "now"
+    }
+  },
+  "validations": [
+    ],
+  "relations": {
+    "program": {
+      "type": "belongsTo",
+      "model": "Program",
+      "foreignKey": "programId"
+    },
+    "member": {
+      "type": "belongsTo",
+      "model": "Member",
+      "foreignKey": "memberId"
+    }
+  },
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "accessType": "READ",
+      "permission": "ALLOW"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "accessType": "WRITE",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {}
+}
