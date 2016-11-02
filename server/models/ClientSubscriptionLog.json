@@ -1,32 +1,29 @@
 {
-  "name": "Exercise",
+  "name": "ClientSubscriptionLog",
   "base": "PersistedModel",
   "strict": "validate",
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "name": {
-      "type": "string",
+    "clientSubscriptionId":{
+      "type":"string",
       "required": true
-    },
-    "description":{
-      "type": "string",
-      "required": true
-    },
-    "reps":{
-      "type": "number",
-      "default": 0
-    },
-    "image":{
-      "type": "string"
     },
     "memberId":{
       "type":"string",
       "required": true
     },
-    "categoryId":{
+    "programId":{
       "type":"string",
+      "required": true
+    },
+    "paidDate": {
+      "type": "date",
+      "defaultFn": "now"
+    },
+    "paidAmount": {
+      "type": "number",
       "required": true
     },
     "status":{
@@ -45,15 +42,20 @@
   "validations": [
     ],
   "relations": {
+    "clientSubscription": {
+      "type": "belongsTo",
+      "model": "ClientSubscription",
+      "foreignKey": "clientSubscriptionId"
+    },
     "member": {
       "type": "belongsTo",
       "model": "Member",
       "foreignKey": "memberId"
     },
-    "category": {
+    "program": {
       "type": "belongsTo",
-      "model": "Category",
-      "foreignKey": "categoryId"
+      "model": "Program",
+      "foreignKey": "programId"
     }
   },
   "acls": [

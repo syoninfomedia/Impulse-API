@@ -1,33 +1,38 @@
 {
-  "name": "Exercise",
+  "name": "Payment",
   "base": "PersistedModel",
   "strict": "validate",
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "name": {
-      "type": "string",
-      "required": true
-    },
-    "description":{
-      "type": "string",
-      "required": true
-    },
-    "reps":{
-      "type": "number",
-      "default": 0
-    },
-    "image":{
-      "type": "string"
-    },
     "memberId":{
       "type":"string",
       "required": true
     },
-    "categoryId":{
+    "programId":{
       "type":"string",
       "required": true
+    },
+    "transactionId":{
+      "type":"string",
+      "required": true
+    },
+    "paidDate": {
+      "type": "date",
+      "defaultFn": "now"
+    },
+    "paidAmount": {
+      "type": "number",
+      "required": true
+    },
+    "paymentStatus": {
+      "type": "string",
+      "default": "pending"
+    },
+    "ipnValidated":{
+      "type":"boolean",
+      "default":"false"
     },
     "status":{
       "type":"boolean",
@@ -50,10 +55,10 @@
       "model": "Member",
       "foreignKey": "memberId"
     },
-    "category": {
+    "program": {
       "type": "belongsTo",
-      "model": "Category",
-      "foreignKey": "categoryId"
+      "model": "Program",
+      "foreignKey": "programId"
     }
   },
   "acls": [

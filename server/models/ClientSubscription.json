@@ -1,33 +1,26 @@
 {
-  "name": "Exercise",
+  "name": "ClientSubscription",
   "base": "PersistedModel",
   "strict": "validate",
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "name": {
-      "type": "string",
+    "programId":{
+      "type":"string",
       "required": true
-    },
-    "description":{
-      "type": "string",
-      "required": true
-    },
-    "reps":{
-      "type": "number",
-      "default": 0
-    },
-    "image":{
-      "type": "string"
     },
     "memberId":{
       "type":"string",
       "required": true
     },
-    "categoryId":{
-      "type":"string",
-      "required": true
+    "startDate": {
+      "type": "date",
+      "defaultFn": "now"
+    },
+    "endDate": {
+      "type": "date",
+      "defaultFn": "now"
     },
     "status":{
       "type":"boolean",
@@ -50,10 +43,10 @@
       "model": "Member",
       "foreignKey": "memberId"
     },
-    "category": {
+    "program": {
       "type": "belongsTo",
-      "model": "Category",
-      "foreignKey": "categoryId"
+      "model": "Program",
+      "foreignKey": "programId"
     }
   },
   "acls": [

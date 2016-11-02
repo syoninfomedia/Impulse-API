@@ -52,5 +52,29 @@
   "Exercise":{
     "dataSource": "db",
     "public": true
+  },
+  "DietProgram":{
+    "dataSource": "db",
+    "public": true
+  },
+  "Page":{
+    "dataSource": "db",
+    "public": true
+  },
+  "ClientSubscription":{
+    "dataSource": "db",
+    "public": true
+  },
+  "ClientSubscriptionLog":{
+    "dataSource": "db",
+    "public": true
+  },
+  "Payment":{
+    "dataSource": "db",
+    "public": true
+  },
+  "Setting":{
+    "dataSource": "db",
+    "public": true
   }
 }

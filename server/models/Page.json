@@ -1,5 +1,5 @@
 {
-  "name": "Exercise",
+  "name": "Page",
   "base": "PersistedModel",
   "strict": "validate",
   "options": {
@@ -10,22 +10,18 @@
       "type": "string",
       "required": true
     },
-    "description":{
+    "slug": {
       "type": "string",
       "required": true
     },
-    "reps":{
-      "type": "number",
-      "default": 0
+    "description":{
+      "type": "string",
+      "required": true
     },
     "image":{
       "type": "string"
     },
     "memberId":{
-      "type":"string",
-      "required": true
-    },
-    "categoryId":{
       "type":"string",
       "required": true
     },
@@ -49,11 +45,6 @@
       "type": "belongsTo",
       "model": "Member",
       "foreignKey": "memberId"
-    },
-    "category": {
-      "type": "belongsTo",
-      "model": "Category",
-      "foreignKey": "categoryId"
     }
   },
   "acls": [

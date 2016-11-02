@@ -1,5 +1,5 @@
 {
-  "name": "Exercise",
+  "name": "Setting",
   "base": "PersistedModel",
   "strict": "validate",
   "options": {
@@ -14,20 +14,18 @@
       "type": "string",
       "required": true
     },
-    "reps":{
-      "type": "number",
-      "default": 0
+    "live": {
+      "type":"boolean",
+      "default":"true"
     },
     "image":{
       "type": "string"
     },
-    "memberId":{
-      "type":"string",
-      "required": true
+    "backgroundImage":{
+      "type":"string"
     },
-    "categoryId":{
-      "type":"string",
-      "required": true
+    "video":{
+      "type":"string"
     },
     "status":{
       "type":"boolean",
@@ -45,16 +43,7 @@
   "validations": [
     ],
   "relations": {
-    "member": {
-      "type": "belongsTo",
-      "model": "Member",
-      "foreignKey": "memberId"
-    },
-    "category": {
-      "type": "belongsTo",
-      "model": "Category",
-      "foreignKey": "categoryId"
-    }
+
   },
   "acls": [
     {

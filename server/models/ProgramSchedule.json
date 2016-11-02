@@ -26,6 +26,10 @@
       "type":[],
       "default": []
     },
+    "dietProgramId":{
+      "type":[],
+      "default": []
+    },
     "status":{
       "type":"boolean",
       "default":"true"
