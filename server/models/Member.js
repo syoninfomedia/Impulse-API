@@ -7,10 +7,8 @@ var config = require('../../server/config.json');
 var path = require('path');
 
 module.exports = function(User) {
-  /*//send verification email after registration
+  //send verification email after registration
   User.afterRemote('create', function(context, user, next) {
-    console.log('> user.afterRemote triggered');
-
     var options = {
       type: 'email',
       to: user.email,
@@ -20,22 +18,12 @@ module.exports = function(User) {
       redirect: '/verified',
       user: user
     };
-
     user.verify(options, function(err, response) {
       if (err) {
         User.deleteById(user.id);
         return next(err);
       }
-
-      console.log('> verification email sent:', response);
-
-      context.res.render('response', {
-        title: 'Signed up successfully',
-        content: 'Please check your email and click on the verification link ' +
-            'before logging in.',
-        redirectTo: '/',
-        redirectToLinkText: 'Log in'
-      });
+      return next(null);
     });
   });
 
@@ -54,5 +42,5 @@ module.exports = function(User) {
       if (err) return console.log('> error sending password reset email');
       console.log('> sending password reset email to:', info.email);
     });
-  });*/
+  });
 };

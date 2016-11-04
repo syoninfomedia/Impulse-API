@@ -35,7 +35,10 @@
   },
   "Member": {
     "dataSource": "db",
-    "public": true
+    "public": true,
+    "options": {
+      "emailVerificationRequired": true
+    }
   },
   "Program": {
     "dataSource": "db",
@@ -76,5 +79,8 @@
   "Setting":{
     "dataSource": "db",
     "public": true
+  },
+  "Email": {
+    "dataSource": "emailDs"
   }
 }

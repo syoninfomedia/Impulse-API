@@ -7,5 +7,25 @@
     "username": "",
     "password": "",
     "port": 27017
+  },
+  "emailDs": {
+    "name": "emailDs",
+    "connector": "mail",
+    "transports": [
+      {
+        "type": "smtp",
+        "host": "smtp.gmail.com",
+        "secure": true,
+        "port": 465,
+        "tls": {
+          "rejectUnauthorized": false
+        },
+        "auth": {
+          "user": "syon.virendra@gmail.com",
+          "pass": "virendra@755"
+        }
+      }
+    ]
   }
+
 }
