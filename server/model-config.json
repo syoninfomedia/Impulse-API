@@ -82,5 +82,9 @@
   },
   "Email": {
     "dataSource": "emailDs"
+  },
+  "EmailTemplate": {
+    "dataSource": "db",
+    "public": true
   }
 }

@@ -4,7 +4,9 @@
 // License text available at https://opensource.org/licenses/MIT
 
 var config = require('../../server/config.json');
+var common = require('../../server/common.js');
 var path = require('path');
+var async = require('async');
 
 module.exports = function(User) {
   //send verification email after registration
@@ -43,4 +45,125 @@ module.exports = function(User) {
       console.log('> sending password reset email to:', info.email);
     });
   });
+
+
+  /*********************** VALIDATIONS ENDS*******************/
+  User.socialLogin = function(data, cb) {
+    // Create the access token and return the Token
+    var userObj = {} //stores user data if not already registered
+    if (data && data.email) {
+      User.findOne({where:{email:data.email}}, function(err, user){
+        if (err) {
+          return cb(err);
+        }
+        if (!user) {
+          // then user does not exists in our database save him
+          userObj.email = data.email;
+          userObj.username = data.username || data.email;
+          userObj.emailVerified = true;
+          userObj.status = '1';
+          userObj.loginType = 'SOCIAL';
+          userObj.role = data.role && (data.role == 1 || data.role == 2) ? data.role : 2;
+          //trick is we don't know user password so we generate it
+          userObj.password = '11@'+data.email.substring(0, data.email.indexOf('@'))+'CRC';
+        }
+        if (userObj.email) {
+          async.waterfall([
+            // register user
+            function (cbk) {
+              User.create(userObj, function(err, user) {
+                if (err) {
+                  return cbk(err, null);
+                }
+                else {
+                  return cbk(null, user);
+                }
+              });
+            },
+            // find email template
+            // we don't care if we fail at that point
+            function (user, cbk) {
+              if (user && user.id) {
+                var EmailTemplateModel = User.app.models.EmailTemplate;
+                EmailTemplateModel.findOne({where:{slug:'SOCIALSIGNUP', lang:'en-us'}}, function(err, template) {
+                  if (err) {
+                    return cbk(err, user, null);
+                  }
+                  else {
+                    return cbk(null, user, template);
+                  }
+                });
+              }
+              else {
+                return cbk(null, user || null, null);
+              }
+            },
+            // we send email to user regarding his registration and new password
+            // we don't care if we fail at that point
+            function (user, template, cbk) {
+              if (user && user.id && template && template.id && user.email) {
+                var options = {
+                  to: user.email,
+                  from: 'syon.virendra@gmail.com',
+                  subject: template.subject || '',
+                  text: template.description || '',
+                  html: common.replaceEmailTemplateKeys(userObj, template.description)
+                };
+                User.app.models.Email.send(options, function(err, mail) {
+                  if (err) {
+                    return cbk(err, user);
+                  }
+                  else {
+                    return cbk(null, user);
+                  }
+                });
+              }
+              else {
+                return cbk(null, user || null);
+              }
+            }
+          ], function(err, user){
+            // through access token out of user
+            if (user && user.id) {
+              user.createAccessToken(86400, function(err, res) {
+                if (err) return cb(err);
+                return cb(null,res);
+              });
+            }
+            else {
+              return cb(err);
+            }
+          });
+
+        }
+        // just make him login
+        else {
+          // through access token out of user
+          if (user && user.id) {
+            user.createAccessToken(86400, function(err, res) {
+              if (err) return cb(err);
+              return cb(null,res);
+            });
+          } else {
+            var err = new Error('Could not login');
+            err.status = err.statusCode = 422;
+            err.code = 'CANT_MAKE_LOGIN';
+            return cb(err);
+          }
+        }
+      })
+    }
+  };
+
+  //Create a remote method to add program with schedules and exercises
+  User.remoteMethod('socialLogin', {
+    isStatic: true,
+    http: {path: '/socialLogin', verb: 'post'},
+    accepts: [
+      {arg: 'data', type: 'object', http: {source: 'body'}, required: true, description:'An object of model property name/value pairs' }
+    ],
+    returns: {root: true, type: 'object'},
+    description: 'Social login with facebook and instagram'
+  });
+
 };

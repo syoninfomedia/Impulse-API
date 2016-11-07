@@ -3,7 +3,14 @@
   "base": "User",
   "idInjection": true,
   "properties": {
-
+    "role":{
+      "type":"string",
+      "required": true
+    },
+    "loginType":{
+      "type":"string",
+      "default": "WEB"
+    }
   },
   "validations": [],
   "relations": {},
@@ -16,9 +23,15 @@
     },
     {
       "principalType": "ROLE",
-      "principalId": "$authenticated",
+      "principalId": "$everyone",
       "accessType": "WRITE",
       "permission": "ALLOW"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "socialLogin"
     }
   ],
   "methods": []

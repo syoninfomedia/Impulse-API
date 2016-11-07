@@ -2,7 +2,7 @@ var async = require("async");
 module.exports = function(Program) {
   /*********************** VALIDATIONS STARTS*******************/
 
-  //Program.validatesUniquenessOf('name', { message: 'Name is already in use.' });
+  Program.validatesUniquenessOf('name', { message: 'Name is already in use.' });
 
   /*********************** VALIDATIONS ENDS*******************/
   Program.saveProgram = function(data, cb) {
