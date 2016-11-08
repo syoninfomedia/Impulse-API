@@ -1,4 +1,5 @@
 var async = require("async");
+var assert = require("assert");
 module.exports = function(Program) {
   /*********************** VALIDATIONS STARTS*******************/
 
@@ -33,10 +34,22 @@ module.exports = function(Program) {
               sch.programId = savedProgramObj.id;
               //store diet program
               if (sch.dietProgramId && sch.dietProgramId.length) {
+                // remove inserted objects
+                sch.dietProgramId.forEach(function(v, k){
+                  if (v.id) {
+                    schedulesArr[key].dietProgramId[k] = v.id;
+                  }
+                });
                 dietProgramArr = dietProgramArr.concat(sch.dietProgramId.filter(function(v){return v && v.name;}));
               }
               // store exercises
               if (sch.exerciseId && sch.exerciseId.length) {
+                // remove inserted objects
+                sch.exerciseId.forEach(function(v, k){
+                  if (v.id) {
+                    schedulesArr[key].exerciseId[k] = v.id;
+                  }
+                });
                 exerciseArr = exerciseArr.concat(sch.exerciseId.filter(function(v){return v && v.name;}));
               }
             });
@@ -105,14 +118,9 @@ module.exports = function(Program) {
         if (err) {
           return cb(err);
         }
+        assert(data && data.id, 'Could not create program');
         if(data && data.id) {
           cb(null, data);
-
-        }else {
-          var err = new Error('Could not create program');
-          err.status = err.statusCode = 422;
-          err.code = 'CANT_CREATE_PROGRAM';
-          return cb(err);
         }
       });
   };
@@ -125,9 +133,7 @@ module.exports = function(Program) {
     var customErr = new Error('Could not update program');
     customErr.status = customErr.statusCode = 422;
     customErr.code = 'CANT_UPDATE_PROGRAM';
-    if (!data.id) {
-      return cb(customErr);
-    }
+    assert(data && data.id, 'Could not update program');
     if (data && data.schedules && data.schedules.length) {
       schedulesArr = data.schedules; // store schedule in arr
       try {
@@ -165,10 +171,20 @@ module.exports = function(Program) {
               sch.programId = updatedProgramObj.id;
               //store diet program
               if (sch.dietProgramId && sch.dietProgramId.length) {
+                sch.dietProgramId.forEach(function(v, k){
+                  if (v.id) {
+                    schedulesArr[key].dietProgramId[k] = v.id;
+                  }
+                });
                 dietProgramArr = dietProgramArr.concat(sch.dietProgramId.filter(function(v){return v && v.name;}));
               }
               // store exercises
               if (sch.exerciseId && sch.exerciseId.length) {
+                sch.exerciseId.forEach(function(v, k){
+                  if (v.id) {
+                    schedulesArr[key].exerciseId[k] = v.id;
+                  }
+                });
                 exerciseArr = exerciseArr.concat(sch.exerciseId.filter(function(v){return v && v.name;}));
               }
             });
@@ -237,11 +253,9 @@ module.exports = function(Program) {
         if (err) {
           return cb(err);
         }
+        assert(data && data.id, 'Could not update program');
         if(data && data.id) {
           cb(null, data);
-
-        }else {
-          return cb(customErr);
         }
       });
 

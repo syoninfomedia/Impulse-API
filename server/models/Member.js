@@ -6,9 +6,17 @@
 var config = require('../../server/config.json');
 var common = require('../../server/common.js');
 var path = require('path');
+var _ = require('lodash');
+var assert = require('assert');
 var async = require('async');
-
 module.exports = function(User) {
+  /******************* VALIDATION ******************/
+  User.validatesInclusionOf('user_type', { in: [1, 2] });
+  User.validatesInclusionOf('status', { in: [0, 1] });
+  /******************* VALIDATION ENDS******************/
+
+  /*********************** HOOKS *******************/
+
   //send verification email after registration
   User.afterRemote('create', function(context, user, next) {
     var options = {
@@ -46,24 +54,23 @@ module.exports = function(User) {
     });
   });
 
+  /*********************** HOOKS ENDS*******************/
 
-  /*********************** VALIDATIONS ENDS*******************/
+  /*********************** Remote Methods*******************/
+
   User.socialLogin = function(data, cb) {
     // Create the access token and return the Token
     var userObj = {} //stores user data if not already registered
+    assert(data && data.email && data.username, 'Insufficient Data');
     if (data && data.email) {
-      User.findOne({where:{email:data.email}}, function(err, user){
+      User.findOne({where:{email:data.email.trim()}}, function(err, user){
         if (err) {
           return cb(err);
         }
         if (!user) {
+          _.extend(userObj, data);
           // then user does not exists in our database save him
-          userObj.email = data.email;
-          userObj.username = data.username || data.email;
           userObj.emailVerified = true;
-          userObj.status = '1';
-          userObj.loginType = 'SOCIAL';
-          userObj.role = data.role && (data.role == 1 || data.role == 2) ? data.role : 2;
           //trick is we don't know user password so we generate it
           userObj.password = '11@'+data.email.substring(0, data.email.indexOf('@'))+'CRC';
         }
@@ -139,22 +146,19 @@ module.exports = function(User) {
         // just make him login
         else {
           // through access token out of user
+          assert(user && user.id, 'Could not login');
           if (user && user.id) {
             user.createAccessToken(86400, function(err, res) {
               if (err) return cb(err);
               return cb(null,res);
             });
-          } else {
-            var err = new Error('Could not login');
-            err.status = err.statusCode = 422;
-            err.code = 'CANT_MAKE_LOGIN';
-            return cb(err);
           }
         }
       })
     }
   };
 
+  /*********************** Remote Methods Ends*******************/
   //Create a remote method to add program with schedules and exercises
   User.remoteMethod('socialLogin', {
     isStatic: true,

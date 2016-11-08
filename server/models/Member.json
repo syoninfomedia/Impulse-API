@@ -3,13 +3,113 @@
   "base": "User",
   "idInjection": true,
   "properties": {
-    "role":{
+    "user_type":{
+      "type":"number",
+      "required": true
+    },
+    "coach_id":{
+      "type":"number",
+      "default": 0
+    },
+    "referral_code":{
+      "type":"string",
+      "default": ""
+    },
+    "name":{
       "type":"string",
       "required": true
     },
-    "loginType":{
+    "last_name":{
       "type":"string",
-      "default": "WEB"
+      "default": ""
+    },
+    "telephone":{
+      "type":"string",
+      "default": ""
+    },
+    "dob":{
+      "type":"string",
+      "default": ""
+    },
+    "citizen":{
+      "type":"string",
+      "default": ""
+    },
+    "iban":{
+      "type":"string",
+      "default": ""
+    },
+    "user_image":{
+      "type":"string",
+      "default": "male"
+    },
+    "country":{
+      "type":"string",
+      "default": ""
+    },
+    "activation_code":{
+      "type":"string",
+      "default": ""
+    },
+    "device_token":{
+      "type":"string",
+      "default": ""
+    },
+    "device_id":{
+      "type":"string",
+      "default": ""
+    },
+    "device_type":{
+      "type":"string",
+      "default": ""
+    },
+    "social_type":{
+      "type":"string",
+      "default": ""
+    },
+    "social_id":{
+      "type":"string",
+      "default": ""
+    },
+    "appVersion":{
+      "type":"string",
+      "default": ""
+    },
+    "apiVersion":{
+      "type":"string",
+      "default": ""
+    },
+    "is_deleted":{
+      "type":"string",
+      "default": ""
+    },
+    "is_first_login":{
+      "type":"string",
+      "default": ""
+    },
+    "address":{
+      "type":"string",
+      "default": ""
+    },
+    "zipcode":{
+      "type":"string",
+      "default": ""
+    },
+    "auth_key":{
+      "type":"string",
+      "default": ""
+    },
+    "created_at":{
+      "type":"date",
+      "defaultFn": "now"
+    },
+    "updated_at":{
+      "type":"date",
+      "defaultFn": "now"
+    },
+    "status":{
+      "type":"number",
+      "required": true
     }
   },
   "validations": [],
