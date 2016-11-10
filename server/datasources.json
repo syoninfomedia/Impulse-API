@@ -26,6 +26,13 @@
         }
       }
     ]
+  },
+  "storage": {
+    "name": "storage",
+    "connector": "loopback-component-storage",
+    "provider": "filesystem",
+    "root": "./views",
+    "maxFileSize": "52428800"
   }
 
 }

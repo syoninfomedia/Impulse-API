@@ -29,13 +29,14 @@ boot(app, __dirname, function(err) {
 
 app.get('remoting').errorHandler = {
   handler: function(error, req, res, next) {
-      // activate it default error handler
+       // activate it default error handler
       //next();
         restErrorHandler(error, req, res, next,null);
       },
   disableStackTrace: true
 };
 
+// TODO : modifying header is not cool at all
 function restErrorHandler(err, req, res, next, options) {
   var log = require('debug')('server:rest:errorHandler');
   var debug = require('debug')('strong-remoting:rest-adapter');
@@ -62,7 +63,8 @@ function restErrorHandler(err, req, res, next, options) {
     }
 
     if (res.statusCode === undefined || res.statusCode < 400) {
-      res.statusCode = err.statusCode || err.status || 500;
+      // TODO : modifying header is not cool at all
+      //res.statusCode = err.statusCode || err.status || 500;
     }
 
     if (Array.isArray(err)) {
