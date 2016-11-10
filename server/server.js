@@ -78,10 +78,30 @@ function restErrorHandler(err, req, res, next, options) {
       err = new Error(msg);
       err.details = details;
     }
+    var errorMessage = generateResponseError(err).message;
+    try {
+      var message = generateResponseError(err).message;
+      if (message.indexOf(':') > -1 || message.indexOf('(') > -1)
+      message =  message.substring(message.indexOf(':')+1, message.indexOf('(') || message.indexOf('.')).split("`").join("").toLowerCase();
+      if (message && message.length) {
+        message = message.split(" ");
+        message.forEach(function (v,k) {
+          if (k!=0) {
+            if (message[k-1] == message[k]) {
+              message.splice(k ,1)
+            }
+          }
+        });
+        message = message.join(" ");
+      }
+      errorMessage = message;
+    } catch (e) {
+      // nothing to handle
+    }
     res.send({
       status : false,
       name: generateResponseError(err).name,
-      message: generateResponseError(err).message.substring(generateResponseError(err).message.indexOf(':')+1, generateResponseError(err).message.indexOf('(') || generateResponseError(err).message.indexOf('.')).toLowerCase(),
+      message: errorMessage,
       statusCode: generateResponseError(err).statusCode
     });
 

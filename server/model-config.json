@@ -90,5 +90,9 @@
   "File": {
     "dataSource": "db",
     "public": true
+  },
+  "SocialMember": {
+    "dataSource": "db",
+    "public": false
   }
 }

@@ -68,8 +68,11 @@ module.exports = function(User) {
   User.socialLogin = function(data, cb) {
     // Create the access token and return the Token
     var userObj = {} //stores user data if not already registered
-    assert(data && data.email && data.username, 'Insufficient Data');
-    if (data && data.email) {
+    var SocialMemberModel = User.app.models.SocialMember;
+    assert(data && data.social_id, 'Social id is not supplied');
+    // if email is supplied
+    // then save the user if not already and make him login
+    if (data.email) {
       User.findOne({where:{email:data.email.trim()}}, function(err, user){
         if (err) {
           return cb(err);
@@ -80,6 +83,7 @@ module.exports = function(User) {
           userObj.emailVerified = true;
           //trick is we don't know user password so we generate it
           userObj.password = '11@'+data.email.substring(0, data.email.indexOf('@'))+'CRC';
+          userObj.username = data.username || '11@'+data.email.substring(0, data.email.indexOf('@'))+'CRC';
         }
         if (userObj.email) {
           async.waterfall([
@@ -145,7 +149,7 @@ module.exports = function(User) {
               });
             }
             else {
-              return cb(err);
+              return cb(err, null);
             }
           });
 
@@ -161,7 +165,57 @@ module.exports = function(User) {
             });
           }
         }
-      })
+      });
+    }
+    // save him into social table if not already
+    // then try to search him in user table if not then ask for email again
+    // else make him login
+    else if (data.social_id) {
+      async.parallel([
+        // if the user in social table
+        function(cbk) {
+          SocialMemberModel.findOne({where:{social_id:data.social_id}},cbk);
+        },
+        function(cbk) {
+          User.findOne({where:{social_id:data.social_id}},cbk);
+        }
+      ], function (err, userSavedState) {
+        if (err) {
+          return cb(err);
+        }
+        var isSocialSaved = userSavedState && userSavedState[0] ? userSavedState[0] : null;
+        var isMemberSaved = userSavedState && userSavedState[1] ? userSavedState[1] : null;
+        // if user is not saved in social table
+        if (!isSocialSaved) {
+          var socialObj = {
+            social_id:data.social_id,
+            response:data
+          }
+          SocialMemberModel.create(socialObj, function(err, response) {
+            if (err) return cb (err, null);
+            return cb (null,_.extend(response, {step:2}));
+          });
+        }
+        else {
+          User.findOne({where:{social_id:data.social_id.trim()}}, function(err, user){
+            if (err) {
+              return cb(err);
+            }
+            else if (!user || !user.id){
+              return cb (null,_.extend(isSocialSaved || {}, {step:2}));
+            }
+            if (user && user.id) {
+              user.createAccessToken(86400, function(err, res) {
+                if (err) return cb(err);
+                return cb(null,res);
+              });
+            }
+          });
+        }
+      });
+    }
+    else {
+      cb (null, {});
     }
   };
 

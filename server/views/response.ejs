@@ -1,1 +1,5 @@
-{name:name,email:socialEmail,social_id: socialId,user_image:socialImage,social_type:socialType,coach : basic.defaultVal.coach_for_user}
+<h1><%= title %></h1>
+<% if (typeof content !== 'undefined') { %>
+  <p><%= content %></p>
+<% } %>
+<a href="<%= redirectTo %>"><%= redirectToLinkText %></a>
