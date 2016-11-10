@@ -11,11 +11,19 @@ var assert = require('assert');
 var async = require('async');
 module.exports = function(User) {
   /******************* VALIDATION ******************/
-  User.validatesInclusionOf('user_type', { in: [1, 2] });
-  User.validatesInclusionOf('status', { in: [0, 1] });
+  User.validatesInclusionOf('user_type', { in: ['1', '2'] });
+  User.validatesInclusionOf('status', { in: ['0', '1'] });
   /******************* VALIDATION ENDS******************/
 
   /*********************** HOOKS *******************/
+
+
+  User.observe('before save', function (context, next) {
+    var key = context.instance ? 'instance' : context.data ? 'data' : '';
+    context[key].user_type = parseInt(context[key].coach_id) ? 2 : 1;
+    next();
+  });
+
 
   //send verification email after registration
   User.afterRemote('create', function(context, user, next) {
@@ -57,7 +65,6 @@ module.exports = function(User) {
   /*********************** HOOKS ENDS*******************/
 
   /*********************** Remote Methods*******************/
-
   User.socialLogin = function(data, cb) {
     // Create the access token and return the Token
     var userObj = {} //stores user data if not already registered

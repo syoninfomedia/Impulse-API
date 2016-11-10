@@ -87,10 +87,6 @@
     "dataSource": "db",
     "public": true
   },
-  "Container": {
-    "dataSource": "storage",
-    "public": true
-  } ,
   "File": {
     "dataSource": "db",
     "public": true

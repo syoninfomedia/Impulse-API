@@ -6,6 +6,7 @@ module.exports = function(server) {
 
   //verified
   router.get('/verified', function(req, res) {
+    console.log(req.app.get('views'));
     res.sendFile(req.app.get('views')+"/verified.html")
   });
 

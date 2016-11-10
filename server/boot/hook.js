@@ -18,7 +18,7 @@ module.exports = function(server) {
   // modify all returned values
   remotes.after('**', function (ctx, next) {
     ctx.result = {
-      status : 'SUCCESS',
+      status : true,
       data: ctx.result
     };
     next();

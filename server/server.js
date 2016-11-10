@@ -79,9 +79,9 @@ function restErrorHandler(err, req, res, next, options) {
       err.details = details;
     }
     res.send({
-      status : 'ERROR',
+      status : false,
       name: generateResponseError(err).name,
-      message: generateResponseError(err).message,
+      message: generateResponseError(err).message.substring(generateResponseError(err).message.indexOf(':')+1, generateResponseError(err).message.indexOf('(') || generateResponseError(err).message.indexOf('.')).toLowerCase(),
       statusCode: generateResponseError(err).statusCode
     });
 

@@ -4,8 +4,8 @@
   "idInjection": true,
   "properties": {
     "user_type":{
-      "type":"number",
-      "required": true
+      "type":"string",
+      "default": 1
     },
     "coach_id":{
       "type":"number",
@@ -31,6 +31,26 @@
       "type":"string",
       "default": ""
     },
+    "sex":{
+      "type":"string",
+      "default": "male"
+    },
+    "age":{
+      "type":"string",
+      "default": ""
+    },
+    "height":{
+      "type":"string",
+      "default": ""
+    },
+    "weight":{
+      "type":"string",
+      "default": ""
+    },
+    "imc":{
+      "type":"string",
+      "default": ""
+    },
     "citizen":{
       "type":"string",
       "default": ""
@@ -41,7 +61,7 @@
     },
     "user_image":{
       "type":"string",
-      "default": "male"
+      "default": ""
     },
     "country":{
       "type":"string",
@@ -108,8 +128,8 @@
       "defaultFn": "now"
     },
     "status":{
-      "type":"number",
-      "required": true
+      "type":"string",
+      "default": "1"
     }
   },
   "validations": [],
