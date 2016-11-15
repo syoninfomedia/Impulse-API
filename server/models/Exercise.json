@@ -6,7 +6,7 @@
     "validateUpsert": true
   },
   "properties": {
-    "name": {
+    "exercise_name": {
       "type": "string",
       "required": true
     },
@@ -17,6 +17,18 @@
     "reps":{
       "type": "number",
       "default": 0
+    },
+    "reps_type_val":{
+      "type": "string"
+    },
+    "zone":{
+      "type": "string"
+    },
+    "serie":{
+      "type": "string"
+    },
+    "pause":{
+      "type": "string"
     },
     "image":{
       "type": "string"
@@ -30,8 +42,8 @@
       "required": true
     },
     "status":{
-      "type":"boolean",
-      "default":"true"
+      "type":"string",
+      "default":"1"
     },
     "created": {
       "type": "date",

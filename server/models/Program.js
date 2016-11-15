@@ -1,4 +1,5 @@
 var async = require("async");
+var _ = require("lodash");
 var assert = require("assert");
 module.exports = function(Program) {
   /*********************** VALIDATIONS STARTS*******************/
@@ -261,6 +262,27 @@ module.exports = function(Program) {
 
   };
 
+  Program.copyProgram = function(data, cb) {
+    assert(data && data.id, 'Could not copy the  program');
+    var customErr = new Error('Could not copy the program');
+    customErr.status = customErr.statusCode = 422;
+    customErr.code = 'CANT_COPY_PROGRAM';
+    Program.findOne({where:{id: data.id}}, function (err, ProgramObj) {
+      if (err || !ProgramObj)
+        return cb(err || customErr, null);
+      var saveObj  = _.cloneDeep(ProgramObj);
+      saveObj.program_name = saveObj.program_name + ' - Copy1';
+      //updateAttributes
+      ProgramObj.create(saveObj, function (err, createdProgramObj) {
+        if (err)
+          return cb(err, null);
+        //updateAttributes
+        return cb(null, createdProgramObj);
+      });
+    });
+
+  };
+
   //Create a remote method to add program with schedules and exercises
   Program.remoteMethod('saveProgram', {
     http: {path: '/saveProgram', verb: 'post'},
@@ -278,5 +300,14 @@ module.exports = function(Program) {
     ],
     returns: {root: true, type: 'object'},
     description: 'Update Program with schedules and exercises'
+  });
+
+  Program.remoteMethod('copyProgram', {
+    http: {path: '/copyProgram', verb: 'post'},
+    accepts: [
+      {arg: 'data', type: 'object', http: {source: 'body'}, required: true, description:'An object of model property name/value pairs id is required'}
+    ],
+    returns: {root: true, type: 'object'},
+    description: 'Copy Program'
   });
 };

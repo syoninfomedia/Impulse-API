@@ -182,7 +182,7 @@ module.exports = function(User) {
                   // nothing to handle
                 }
               }
-              return cb(null,res);
+              return cb(null, _.extend(_.extend(res, user), {type:'login'}));
             });
           }
         }

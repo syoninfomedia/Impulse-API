@@ -22,11 +22,11 @@
       "type": "string",
       "required": true
     },
-    "exerciseId":{
+    "exercise_data":{
       "type":[],
       "default": []
     },
-    "dietProgramId":{
+    "diet_data":{
       "type":[],
       "default": []
     },
