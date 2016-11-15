@@ -17,10 +17,19 @@ module.exports = function(server) {
 
   // modify all returned values
   remotes.after('**', function (ctx, next) {
-    ctx.result = {
-      status : true,
-      data: ctx.result
-    };
+    if (ctx.result.type == 'login' || ctx.result.type == 'register') {
+      ctx.result = {
+        status : true,
+        data: ctx.result,
+        type: ctx.result.type
+      };
+    } else {
+      ctx.result = {
+        status : true,
+        data: ctx.result
+      };
+    }
+
     next();
   });
 };

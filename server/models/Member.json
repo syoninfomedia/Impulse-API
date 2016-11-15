@@ -137,7 +137,7 @@
   "acls": [
     {
       "principalType": "ROLE",
-      "principalId": "$authenticated",
+      "principalId": "$everyone",
       "accessType": "READ",
       "permission": "ALLOW"
     },

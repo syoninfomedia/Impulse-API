@@ -21,13 +21,9 @@
     "image":{
       "type": "string"
     },
-    "memberId":{
-      "type":"string",
-      "required": true
-    },
     "status":{
-      "type":"boolean",
-      "default":"true"
+      "type":"string",
+      "default":"1"
     },
     "created": {
       "type": "date",
@@ -41,11 +37,6 @@
   "validations": [
     ],
   "relations": {
-    "member": {
-      "type": "belongsTo",
-      "model": "Member",
-      "foreignKey": "memberId"
-    }
   },
   "acls": [
     {

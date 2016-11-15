@@ -80,10 +80,15 @@ module.exports = function(User) {
         if (!user) {
           _.extend(userObj, data);
           // then user does not exists in our database save him
+          if (data.hasOwnProperty('emailVerified'))
+          userObj.emailVerified = data.emailVerified;
+          else
           userObj.emailVerified = true;
           //trick is we don't know user password so we generate it
           userObj.password = '11@'+data.email.substring(0, data.email.indexOf('@'))+'CRC';
-          userObj.username = data.username || '11@'+data.email.substring(0, data.email.indexOf('@'))+'CRC';
+          // TODO : make sure you change this line because username must be unique
+          userObj.username = data.name;
+          //userObj.username = data.username || '11@'+data.email.substring(0, data.email.indexOf('@'))+'CRC';
         }
         if (userObj.email) {
           async.waterfall([
@@ -145,7 +150,15 @@ module.exports = function(User) {
             if (user && user.id) {
               user.createAccessToken(86400, function(err, res) {
                 if (err) return cb(err);
-                return cb(null,res);
+                if (res.id) {
+                  try {
+                    res.accessToken = res.id;
+                    delete res.id;
+                  } catch (e) {
+                    // nothing to handle
+                  }
+                }
+                return cb(null, _.extend(_.extend(res, user), {type:'register'}));
               });
             }
             else {
@@ -161,6 +174,14 @@ module.exports = function(User) {
           if (user && user.id) {
             user.createAccessToken(86400, function(err, res) {
               if (err) return cb(err);
+              if (res.id) {
+                try {
+                  res.accessToken = res.id;
+                  delete res.id;
+                } catch (e) {
+                  // nothing to handle
+                }
+              }
               return cb(null,res);
             });
           }
@@ -190,27 +211,28 @@ module.exports = function(User) {
           var socialObj = {
             social_id:data.social_id,
             response:data
-          }
+          };
           SocialMemberModel.create(socialObj, function(err, response) {
             if (err) return cb (err, null);
-            return cb (null,_.extend(response, {step:2}));
+            return cb (null,_.extend(response.response, {type:'register'}));
+          });
+        }
+        else if(isMemberSaved && isMemberSaved.id) {
+          isMemberSaved.createAccessToken(86400, function(err, res) {
+            if (err) return cb(err);
+            if (res.id) {
+              try {
+                res.accessToken = res.id;
+                delete res.id;
+              } catch (e) {
+                // nothing to handle
+              }
+            }
+            return cb(null, _.extend(_.extend(res, isMemberSaved),{type:'login'}));
           });
         }
         else {
-          User.findOne({where:{social_id:data.social_id.trim()}}, function(err, user){
-            if (err) {
-              return cb(err);
-            }
-            else if (!user || !user.id){
-              return cb (null,_.extend(isSocialSaved || {}, {step:2}));
-            }
-            if (user && user.id) {
-              user.createAccessToken(86400, function(err, res) {
-                if (err) return cb(err);
-                return cb(null,res);
-              });
-            }
-          });
+          return cb(null,null);
         }
       });
     }

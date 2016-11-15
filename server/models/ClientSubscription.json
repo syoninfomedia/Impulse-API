@@ -23,8 +23,8 @@
       "defaultFn": "now"
     },
     "status":{
-      "type":"boolean",
-      "default":"true"
+      "type":"string",
+      "default":"1"
     },
     "created": {
       "type": "date",
