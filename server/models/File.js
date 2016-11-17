@@ -5,7 +5,7 @@ var config = require('../../server/config.json');
 module.exports = function(File) {
   File.upload = function (ctx,options,cb) {
     if(!options) options = {};
-    ctx.req.params.container = 'images';
+    ctx.req.params.container = 'files';
     File.app.models.Container.upload(ctx.req,ctx.result,options,function (err,fileObj) {
       if(err) {
         cb(err);
@@ -15,7 +15,7 @@ module.exports = function(File) {
         File.create({
           name: fileInfo.name,
           type: fileInfo.type,
-          url: 'http://' + config.host + ':' + config.port +'/client/files/'+ctx.req.params.container+'/'+fileInfo.name
+          url: 'http://' + config.host + ':' + config.port +'/public/'+ctx.req.params.container+'/'+fileInfo.name
         },function (err,obj) {
           if (err) {
             cb(err);

@@ -45,5 +45,11 @@ module.exports = function(server) {
       });
     });
   });
+
+
+  router.get(/^((?!\.).)*$/, function (req, res) {
+    res.sendFile('/index.html', { root: __dirname + '/../../client/views' });
+  });
+  
   server.use(router);
 };
