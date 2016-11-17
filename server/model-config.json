@@ -94,5 +94,9 @@
   "SocialMember": {
     "dataSource": "db",
     "public": false
+  },
+  "Container": {
+    "dataSource": "storage",
+    "public": true
   }
 }

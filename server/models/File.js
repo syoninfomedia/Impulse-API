@@ -1,20 +1,23 @@
 var CONTAINERS_URL = '/api/Containers/';
+var assert = require('assert');
+var config = require('../../server/config.json');
+
 module.exports = function(File) {
   File.upload = function (ctx,options,cb) {
     if(!options) options = {};
-    ctx.req.params.container = 'common';
-    File.app.models.container.upload(ctx.req,ctx.result,options,function (err,fileObj) {
+    ctx.req.params.container = 'images';
+    File.app.models.Container.upload(ctx.req,ctx.result,options,function (err,fileObj) {
       if(err) {
         cb(err);
       } else {
+        assert(fileObj && fileObj.files && fileObj.files.file[0], 'Problem in uploading');
         var fileInfo = fileObj.files.file[0];
         File.create({
           name: fileInfo.name,
           type: fileInfo.type,
-          container: fileInfo.container,
-          url: CONTAINERS_URL+fileInfo.container+'/download/'+fileInfo.name
+          url: 'http://' + config.host + ':' + config.port +'/client/files/'+ctx.req.params.container+'/'+fileInfo.name
         },function (err,obj) {
-          if (err !== null) {
+          if (err) {
             cb(err);
           } else {
             cb(null, obj);

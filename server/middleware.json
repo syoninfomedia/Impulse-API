@@ -42,6 +42,10 @@
     }
   },
   "files": {
+    "loopback#static":{
+      "paths":"/client",
+      "params":"$!../client"
+    }
   },
   "final": {
     "loopback#urlNotFound": {}

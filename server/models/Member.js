@@ -26,8 +26,8 @@ module.exports = function(User) {
 
 
   //send verification email after registration
-  User.afterRemote('create', function(context, user, next) {
-    var options = {
+  User.afterRemote('create', function(context, member, next) {
+ /*   var options = {
       type: 'email',
       to: user.email,
       from: 'noreply@loopback.com',
@@ -42,7 +42,68 @@ module.exports = function(User) {
         return next(err);
       }
       return next(null);
+    });*/
+
+    context.req.app.models.User.generateVerificationToken(member, function (err, token) {
+      if (err) {
+        return next(err);
+      }
+
+      member.verificationToken = token;
+      member.save(function (err) {
+        if (err) {
+          next(err);
+        }
+        else {
+          var verifyUrl = 'http://' + config.host + ':' + config.port + '/api/members/confirm?uid=' + member.id + '&redirect=/verified&token=' + token;
+
+          async.waterfall([
+            // find email template
+            function (cbk) {
+              var EmailTemplateModel = User.app.models.EmailTemplate;
+              EmailTemplateModel.findOne({where:{slug:'SIGNUP', lang:'en-us'}}, function(err, template) {
+                if (err) {
+                  return cbk(err, null);
+                }
+                else {
+                  return cbk(null, template);
+                }
+              });
+            },
+            // we send email to user regarding his registration and new password
+            // we don't care if we fail at that point
+            function (template, cbk) {
+              if (template && template.id) {
+                var options = {
+                  to: member.email,
+                  from: 'syon.virendra@gmail.com',
+                  subject: template.subject || '',
+                  text: template.description || '',
+                  html: common.replaceEmailTemplateKeys(_.extend(member, {verifyUrl: verifyUrl}), template.description)
+                };
+                User.app.models.Email.send(options, function(err, mail) {
+                  if (err) {
+                    return cbk(err, mail);
+                  }
+                  else {
+                    return cbk(null, mail);
+                  }
+                });
+              }
+              else {
+                return cbk(null, null);
+              }
+            }
+          ], function(err, user){
+            if (err) {
+              return next(err);
+            }
+            return next();
+          });
+        }
+      });
     });
+
   });
 
   //send password reset link when requested
@@ -68,7 +129,7 @@ module.exports = function(User) {
   User.socialLogin = function(data, cb) {
     // Create the access token and return the Token
     var userObj = {} //stores user data if not already registered
-    var SocialMemberModel = User.app.models.SocialMember;
+    var SocialUserModel = User.app.models.SocialUser;
     assert(data && data.social_id, 'Social id is not supplied');
     // if email is supplied
     // then save the user if not already and make him login
@@ -148,6 +209,7 @@ module.exports = function(User) {
           ], function(err, user){
             // through access token out of user
             if (user && user.id) {
+              assert(user.emailVerified, 'login failed as the email has not been verified');
               user.createAccessToken(86400, function(err, res) {
                 if (err) return cb(err);
                 if (res.id) {
@@ -172,6 +234,7 @@ module.exports = function(User) {
           // through access token out of user
           assert(user && user.id, 'Could not login');
           if (user && user.id) {
+            assert(user.emailVerified, 'login failed as the email has not been verified');
             user.createAccessToken(86400, function(err, res) {
               if (err) return cb(err);
               if (res.id) {
@@ -195,7 +258,7 @@ module.exports = function(User) {
       async.parallel([
         // if the user in social table
         function(cbk) {
-          SocialMemberModel.findOne({where:{social_id:data.social_id}},cbk);
+          SocialUserModel.findOne({where:{social_id:data.social_id}},cbk);
         },
         function(cbk) {
           User.findOne({where:{social_id:data.social_id}},cbk);
@@ -205,20 +268,21 @@ module.exports = function(User) {
           return cb(err);
         }
         var isSocialSaved = userSavedState && userSavedState[0] ? userSavedState[0] : null;
-        var isMemberSaved = userSavedState && userSavedState[1] ? userSavedState[1] : null;
+        var isUserSaved = userSavedState && userSavedState[1] ? userSavedState[1] : null;
         // if user is not saved in social table
         if (!isSocialSaved) {
           var socialObj = {
             social_id:data.social_id,
             response:data
           };
-          SocialMemberModel.create(socialObj, function(err, response) {
+          SocialUserModel.create(socialObj, function(err, response) {
             if (err) return cb (err, null);
             return cb (null,_.extend(response.response, {type:'register'}));
           });
         }
-        else if(isMemberSaved && isMemberSaved.id) {
-          isMemberSaved.createAccessToken(86400, function(err, res) {
+        else if(isUserSaved && isUserSaved.id) {
+          assert(isUserSaved.emailVerified, 'login failed as the email has not been verified');
+          isUserSaved.createAccessToken(86400, function(err, res) {
             if (err) return cb(err);
             if (res.id) {
               try {
@@ -228,7 +292,7 @@ module.exports = function(User) {
                 // nothing to handle
               }
             }
-            return cb(null, _.extend(_.extend(res, isMemberSaved),{type:'login'}));
+            return cb(null, _.extend(_.extend(res, isUserSaved),{type:'login'}));
           });
         }
         else {
