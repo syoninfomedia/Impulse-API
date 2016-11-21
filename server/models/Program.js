@@ -270,17 +270,20 @@ module.exports = function(Program) {
     Program.findOne({where:{id: data.id}}, function (err, ProgramObj) {
       if (err || !ProgramObj)
         return cb(err || customErr, null);
-      var saveObj  = _.cloneDeep(ProgramObj);
+      var saveObj  = _.cloneDeep(ProgramObj).toJSON();
+      try {
+        delete saveObj.id;
+      } catch (e) {
+      }
       saveObj.program_name = saveObj.program_name + ' - Copy1';
       //updateAttributes
-      ProgramObj.create(saveObj, function (err, createdProgramObj) {
+      Program.create(saveObj, function (err, createdProgramObj) {
         if (err)
           return cb(err, null);
         //updateAttributes
         return cb(null, createdProgramObj);
       });
     });
-
   };
 
   //Create a remote method to add program with schedules and exercises

@@ -1,0 +1,63 @@
+  {
+  "name": "LanguageValue",
+  "base": "PersistedModel",
+  "strict": "validate",
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "lang_value": {
+      "type": "string",
+      "required": true
+    },
+    "lang_id": {
+      "type": "string",
+      "required": true
+    },
+    "key_id": {
+      "type": "string",
+      "required": true
+    },
+    "status":{
+      "type":"string",
+      "default":"1"
+    },
+    "created": {
+      "type": "date",
+      "defaultFn": "now"
+    },
+    "modified": {
+      "type": "date",
+      "defaultFn": "now"
+    }
+  },
+  "validations": [
+    ],
+  "relations": {
+    "language_key": {
+      "type": "belongsTo",
+      "model": "LanguageKey",
+      "foreignKey": "key_id"
+    },
+    "language": {
+      "type": "belongsTo",
+      "model": "Language",
+      "foreignKey": "lang_id"
+    }
+  },
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "accessType": "READ",
+      "permission": "ALLOW"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "accessType": "WRITE",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {}
+}

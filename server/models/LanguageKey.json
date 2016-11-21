@@ -1,0 +1,45 @@
+{
+  "name": "LanguageKey",
+  "base": "PersistedModel",
+  "strict": "validate",
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "key": {
+      "type": "string",
+      "required": true
+    },
+    "status":{
+      "type":"string",
+      "default":"1"
+    },
+    "created": {
+      "type": "date",
+      "defaultFn": "now"
+    },
+    "modified": {
+      "type": "date",
+      "defaultFn": "now"
+    }
+  },
+  "validations": [
+    ],
+  "relations": {
+  },
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "accessType": "READ",
+      "permission": "ALLOW"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "accessType": "WRITE",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {}
+}

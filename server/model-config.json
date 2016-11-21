@@ -98,5 +98,17 @@
   "Container": {
     "dataSource": "storage",
     "public": true
+  },
+  "Language": {
+    "dataSource": "db",
+    "public": true
+  },
+  "LanguageKey": {
+    "dataSource": "db",
+    "public": true
+  },
+  "LanguageValue": {
+    "dataSource": "db",
+    "public": true
   }
 }
